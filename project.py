@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 import os
 import requests
+from rich import print
 
 load_dotenv()
 api_key = os.environ.get("API_KEY")
@@ -11,16 +12,19 @@ def main():
 
 
 def parse_reddit_json():
-    request_url = "https://tradestie.com/api/v1/apps/reddit"
-    json_arr = get_api(request_url)
+    request_url = "https://apewisdom.io/api/v1.0/filter/wallstreetbets/page/1"
+    json_obj = get_api(request_url)
 
-    first_stock = json_arr[0]
+    first_stock = json_obj["results"][0]
 
-    sentiment = first_stock["sentiment"]
     ticker = first_stock["ticker"]
-    n_comments = first_stock["no_of_comments"]
+    name = first_stock["name"]
+    mentions = first_stock["mentions"]
+    upvotes = first_stock["upvotes"]
 
-    print(f"The boys at /r/WallstreetBets are {sentiment} about {ticker}")
+    print(
+        f"{ticker} AKA {name} is ranked #1 on /r/WallstreetBets with {mentions} mentions and {upvotes} upvotes!"
+    )
     parse_polygon_json(ticker)
 
 
@@ -30,7 +34,11 @@ def parse_polygon_json(ticker):
     )
     json_obj = get_api(request_url)
     first_title = json_obj["results"][0]["title"]
-    print(first_title)
+    first_author = json_obj["results"][0]["author"]
+    first_article_url = json_obj["results"][0]["article_url"]
+
+    print(f"Acording to {first_author}\n{first_title}")
+    print(f"Check it out here {first_article_url}")
 
 
 def get_api(request_url):
