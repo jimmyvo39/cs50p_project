@@ -1,7 +1,8 @@
-from dotenv import load_dotenv
 import os
 import requests
 from rich import print
+
+from dotenv import load_dotenv
 
 load_dotenv()
 api_key = os.environ.get("API_KEY")
